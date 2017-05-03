@@ -2,19 +2,16 @@ import itertools
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import NoReverseMatch, reverse
+from django.contrib.admin.utils import lookup_field
 from django.db.models import ForeignKey
 from django.template.defaulttags import NowNode
 from django.utils.safestring import mark_safe
 from suit.config import get_config
 from suit import utils
 
+
 django_version = utils.django_major_version()
 
-try:
-    # Django 1.9
-    from django.contrib.admin.utils import lookup_field
-except ImportError:
-    from django.contrib.admin.util import lookup_field
 
 register = template.Library()
 
@@ -129,12 +126,3 @@ if django_version < (1, 9):
     @register.simple_tag
     def add_preserved_filters(*args, **kwargs):
         pass
-
-if django_version < (1, 5):
-    # Add admin_urlquote filter to support Django 1.4
-    from django.contrib.admin.util import quote
-
-
-    @register.filter
-    def admin_urlquote(value):
-        return quote(value)
